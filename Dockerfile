@@ -12,7 +12,12 @@ WORKDIR /var/www/html
 
 COPY . .
 
-RUN mkdir -p database storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
+RUN mkdir -p database \
+    storage/framework/cache/data \
+    storage/framework/sessions \
+    storage/framework/views \
+    storage/logs \
+    bootstrap/cache \
     && touch database/database.sqlite \
     && composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction --no-scripts \
     && cp .env.example .env \
@@ -27,8 +32,8 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
     /etc/apache2/sites-available/000-default.conf \
     /etc/apache2/apache2.conf
 
-RUN sed -i 's/Listen 80/Listen 0.0.0.0:80/' /etc/apache2/ports.conf
+RUN sed -i 's/^Listen 80$/Listen 0.0.0.0:10000/' /etc/apache2/ports.conf
 
-EXPOSE 80
+EXPOSE 10000
 
 CMD ["apache2-foreground"]
