@@ -26,13 +26,29 @@ RUN mkdir -p database \
     && chown -R www-data:www-data storage bootstrap/cache database \
     && chmod -R 775 storage bootstrap/cache
 
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+RUN a2enmod rewrite
 
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
-    /etc/apache2/sites-available/000-default.conf \
-    /etc/apache2/apache2.conf
+RUN sed -i 's/Listen 80/Listen 10000/' /etc/apache2/ports.conf
 
-RUN sed -i 's/^Listen 80$/Listen 0.0.0.0:10000/' /etc/apache2/ports.conf
+RUN cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
+<VirtualHost *:10000>
+
+    ServerName localhost
+
+    DocumentRoot /var/www/html/public
+
+    <Directory /var/www/html/public>
+        AllowOverride All
+        Require all granted
+        Options FollowSymLinks
+        DirectoryIndex index.php
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>
+EOF
 
 EXPOSE 10000
 
