@@ -1,264 +1,255 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{{ $title ?? 'فروشگاه من' }}</title>
+    <title>فروشگاه من</title>
 
     <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --bg: #f5f7fb;
-            --card: #ffffff;
-            --text: #111827;
-            --muted: #64748b;
-            --border: #e2e8f0;
-            --soft-blue: #eff6ff;
-            --success: #16a34a;
-            --danger: #ef4444;
-            --shadow: 0 10px 30px rgba(15, 23, 42, 0.07);
-        }
-
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            scroll-behavior: smooth;
         }
 
         body {
-            font-family:
-                Tahoma,
-                Arial,
-                "Segoe UI",
-                sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.8;
+            margin: 0;
+            font-family: Tahoma, Arial, sans-serif;
+            background: #f5f7fb;
+            color: #111827;
         }
 
         a {
-            color: inherit;
             text-decoration: none;
-        }
-
-        button,
-        input {
-            font-family: inherit;
+            color: inherit;
         }
 
         .container {
-            width: min(1180px, 92%);
+            width: min(1120px, 92%);
             margin: auto;
         }
 
-        /* =========================
-           NAVBAR
-        ========================= */
-
         .nav {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.96);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
         }
 
         .nav-inner {
-            min-height: 72px;
+            min-height: 70px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 30px;
+            gap: 25px;
         }
 
         .brand {
-            font-size: 25px;
+            margin-left: auto;
+            color: #2563eb;
+            font-size: 22px;
             font-weight: 900;
-            color: var(--primary);
-            white-space: nowrap;
         }
 
         .nav-links {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-        }
-
-        .nav-links a {
-            padding: 10px 15px;
-            border-radius: 12px;
-            color: #334155;
-            font-weight: 600;
-            transition: 0.2s ease;
+            gap: 20px;
         }
 
         .nav-links a:hover {
-            background: var(--soft-blue);
-            color: var(--primary);
+            color: #2563eb;
         }
 
         .cart {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 10px 18px;
-            border: 1px solid var(--border);
-            border-radius: 13px;
-            background: white;
-            font-weight: 700;
-            color: #1e293b;
-            transition: 0.2s ease;
-            white-space: nowrap;
+            border: 1px solid #e5e7eb;
+            padding: 8px 15px;
+            border-radius: 10px;
         }
 
-        .cart:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            transform: translateY(-1px);
+        main {
+            padding-top: 30px;
+            padding-bottom: 40px;
         }
-
-        /* =========================
-           MAIN
-        ========================= */
-
-        main.container {
-            padding-top: 34px;
-            padding-bottom: 50px;
-        }
-
-        /* =========================
-           HERO
-        ========================= */
 
         .hero {
-            min-height: 390px;
-            background:
-                radial-gradient(circle at 15% 30%, rgba(255,255,255,0.9), transparent 25%),
-                linear-gradient(135deg, #eff6ff, #dbeafe);
-            border: 1px solid #dbeafe;
-            border-radius: 30px;
-            padding: 55px;
-            display: grid;
-            grid-template-columns: 1.15fr 0.85fr;
-            align-items: center;
-            gap: 30px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 14px;
-            background: white;
-            border: 1px solid #dbeafe;
-            border-radius: 999px;
-            color: var(--primary);
-            font-weight: 700;
-            margin-bottom: 16px;
+            margin-bottom: 40px;
+            padding: 45px;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #dbeafe, #eff6ff);
         }
 
         .hero h1 {
-            font-size: clamp(34px, 5vw, 58px);
-            line-height: 1.25;
-            margin-bottom: 18px;
-            font-weight: 900;
-            letter-spacing: -1px;
+            font-size: 42px;
+            margin: 0 0 15px;
         }
 
         .hero p {
-            max-width: 650px;
-            color: var(--muted);
+            color: #64748b;
             font-size: 18px;
-            margin-bottom: 24px;
         }
 
         .hero-actions {
             display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 18px;
+            gap: 10px;
         }
 
         .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 50px;
-            padding: 0 24px;
-            border-radius: 14px;
-            background: var(--primary);
+            display: inline-block;
+            background: #2563eb;
             color: white;
-            font-weight: 800;
-            transition: 0.2s ease;
-            border: 0;
-        }
-
-        .btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
+            padding: 11px 20px;
+            border-radius: 11px;
+            font-weight: bold;
         }
 
         .btn-light {
             background: white;
-            color: var(--primary);
+            color: #2563eb;
             border: 1px solid #bfdbfe;
         }
 
-        .btn-light:hover {
-            background: #eff6ff;
-            color: var(--primary-dark);
+        .section {
+            margin: 40px 0;
         }
 
-        .hero-features {
+        .section-head {
             display: flex;
-            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+        }
+
+        .category {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px 10px;
+            text-align: center;
+        }
+
+        .category .icon {
+            display: block;
+            font-size: 35px;
+            margin-bottom: 8px;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 18px;
-            color: #475569;
-            font-size: 14px;
-            font-weight: 700;
         }
 
-        .hero-visual {
-            min-height: 280px;
+        .product {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 17px;
+            overflow: hidden;
+        }
+
+        .product-img {
+            height: 180px;
+            background: #f1f5f9;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
+            font-size: 65px;
         }
 
-        .hero-icon {
-            width: 190px;
-            height: 190px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 95px;
-            background: rgba(255, 255, 255, 0.85);
-            border-radius: 42px;
-            box-shadow: 0 25px 60px rgba(37, 99, 235, 0.15);
-            position: relative;
-            z-index: 3;
-            animation: float 4s ease-in-out infinite;
+        .product-body {
+            padding: 16px;
         }
 
-        .hero-circle {
-            position: absolute;
-            border-radius: 50%;
-            background:
+        .product-title {
+            font-weight: bold;
+            min-height: 55px;
+        }
+
+        .price {
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .meta,
+        .old {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .old {
+            text-decoration: line-through;
+        }
+
+        .footer {
+            background: #0f172a;
+            color: #cbd5e1;
+            padding: 30px 0;
+        }
+
+        @media (max-width: 800px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 30px;
+            }
+
+            .categories {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .products {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .categories,
+            .products {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="nav">
+    <div class="container nav-inner">
+
+        <a class="brand" href="{{ route('home') }}">
+            فروشگاه من
+        </a>
+
+        <nav class="nav-links">
+            <a href="{{ route('home') }}">خانه</a>
+            <a href="{{ route('shop') }}">فروشگاه</a>
+            <a href="#categories">دسته‌بندی‌ها</a>
+        </nav>
+
+        <a class="cart" href="{{ route('cart') }}">
+            🛒 سبد خرید
+        </a>
+
+    </div>
+</header>
+
+<main class="container">
+    @yield('content')
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <strong>فروشگاه من</strong>
+        <p>فروشگاه اینترنتی با Laravel</p>
+    </div>
+</footer>
+
+</body>
+</html>
