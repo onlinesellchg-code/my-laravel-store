@@ -31,6 +31,8 @@ RUN mkdir -p database \
 RUN cat > /usr/local/bin/start-apache.sh <<'EOF'
 #!/bin/sh
 
+set -e
+
 PORT="${PORT:-10000}"
 
 sed "s/__PORT__/${PORT}/g" \
@@ -40,6 +42,9 @@ sed "s/__PORT__/${PORT}/g" \
 sed "s/__PORT__/${PORT}/g" \
     /etc/apache2/sites-available/000-default.conf.template \
     > /etc/apache2/sites-available/000-default.conf
+
+php artisan migrate --force
+php artisan db:seed --force
 
 exec apache2-foreground
 EOF
