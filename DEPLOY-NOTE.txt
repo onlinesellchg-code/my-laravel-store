@@ -1,0 +1,10 @@
+RENDER DEPLOYMENT
+
+Environment variables required:
+APP_URL=https://my-laravel-store.onrender.com
+DB_CONNECTION=pgsql
+DB_URL=<Render Internal Database URL>
+ADMIN_USERNAME=<your admin username>
+ADMIN_PASSWORD=<your new strong password>
+
+The Dockerfile creates the runtime .env automatically, so no hidden .env.example file is required in GitHub.

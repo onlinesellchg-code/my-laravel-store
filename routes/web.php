@@ -1,200 +1,46 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\StoreController;
 use Illuminate\Support\Facades\Route;
 
-$categories = [
-    ['name' => 'دیجیتال', 'icon' => '💻', 'slug' => 'digital'],
-    ['name' => 'خانه و آشپزخانه', 'icon' => '🏠', 'slug' => 'home'],
-    ['name' => 'ابزار و تجهیزات', 'icon' => '🔧', 'slug' => 'tools'],
-    ['name' => 'پوشاک', 'icon' => '👕', 'slug' => 'fashion'],
-    ['name' => 'ورزش و سفر', 'icon' => '🎒', 'slug' => 'sport'],
-    ['name' => 'زیبایی و سلامت', 'icon' => '✨', 'slug' => 'beauty'],
-];
+Route::get('/up', fn()=>response('OK'));
+Route::get('/', [StoreController::class,'home'])->name('home');
+Route::get('/shop', [StoreController::class,'shop'])->name('shop');
+Route::get('/category/{category:slug}', [StoreController::class,'category'])->name('category');
+Route::get('/product/{product:slug}', [StoreController::class,'product'])->name('product');
 
-$products = [
-    ['id' => 1, 'name' => 'هدفون بی‌سیم مدل Pro X', 'price' => 2450000, 'old_price' => 2890000, 'category' => 'دیجیتال', 'emoji' => '🎧'],
-    ['id' => 2, 'name' => 'ساعت هوشمند سری 5', 'price' => 3890000, 'old_price' => 4250000, 'category' => 'دیجیتال', 'emoji' => '⌚'],
-    ['id' => 3, 'name' => 'ست ابزار 32 پارچه', 'price' => 1790000, 'old_price' => null, 'category' => 'ابزار و تجهیزات', 'emoji' => '🧰'],
-    ['id' => 4, 'name' => 'قمقمه استیل ورزشی', 'price' => 690000, 'old_price' => 790000, 'category' => 'ورزش و سفر', 'emoji' => '🥤'],
-    ['id' => 5, 'name' => 'چراغ مطالعه LED', 'price' => 540000, 'old_price' => null, 'category' => 'خانه و آشپزخانه', 'emoji' => '💡'],
-    ['id' => 6, 'name' => 'کوله‌پشتی روزمره', 'price' => 1290000, 'old_price' => 1490000, 'category' => 'ورزش و سفر', 'emoji' => '🎒'],
-    ['id' => 7, 'name' => 'تیشرت نخی ساده', 'price' => 490000, 'old_price' => 590000, 'category' => 'پوشاک', 'emoji' => '👕'],
-    ['id' => 8, 'name' => 'اسپیکر قابل حمل', 'price' => 1590000, 'old_price' => null, 'category' => 'دیجیتال', 'emoji' => '🔊'],
-];
+Route::get('/cart', [StoreController::class,'cart'])->name('cart');
+Route::post('/cart/add/{product}', [StoreController::class,'addToCart'])->name('cart.add');
+Route::patch('/cart', [StoreController::class,'updateCart'])->name('cart.update');
+Route::delete('/cart/remove/{product}', [StoreController::class,'removeCart'])->name('cart.remove');
+Route::post('/cart/coupon', [StoreController::class,'applyCoupon'])->name('cart.coupon');
+Route::get('/checkout', [StoreController::class,'checkoutForm'])->name('checkout');
+Route::post('/checkout', [StoreController::class,'checkout'])->name('checkout.submit');
+Route::get('/order/success/{orderNumber}', [StoreController::class,'success'])->name('order.success');
 
-/*
-|--------------------------------------------------------------------------
-| فروشگاه
-|--------------------------------------------------------------------------
-*/
+Route::get('/admin/login', [AuthController::class,'loginForm'])->name('admin.login');
+Route::post('/admin/login', [AuthController::class,'login'])->name('admin.login.submit');
+Route::post('/admin/logout', [AuthController::class,'logout'])->name('admin.logout');
 
-Route::get('/', function () use ($categories, $products) {
-    return view('home', compact('categories', 'products'));
-})->name('home');
-
-Route::get('/shop', function () use ($categories, $products) {
-    return view('shop', compact('categories', 'products'));
-})->name('shop');
-
-Route::get('/category/{slug}', function (string $slug) use ($categories, $products) {
-    $category = collect($categories)->firstWhere('slug', $slug);
-
-    abort_unless($category, 404);
-
-    $items = collect($products)
-        ->where('category', $category['name'])
-        ->values()
-        ->all();
-
-    return view('category', [
-        'category' => $category,
-        'products' => $items,
-    ]);
-})->name('category');
-
-Route::get('/product/{id}', function (int $id) use ($products) {
-    $product = collect($products)->firstWhere('id', $id);
-
-    abort_unless($product, 404);
-
-    return view('product', compact('product'));
-})->name('product');
-
-Route::get('/cart', fn () => view('cart'))->name('cart');
-
-/*
-|--------------------------------------------------------------------------
-| ورود ادمین
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/admin/login', function () {
-    if (session('admin_authenticated')) {
-        return redirect()->route('admin.dashboard');
-    }
-
-    return view('admin.login');
-})->name('admin.login');
-
-Route::post('/admin/login', function (Request $request) {
-    $request->validate([
-        'username' => ['required', 'string'],
-        'password' => ['required', 'string'],
-    ]);
-
-    $validUsername = hash_equals(
-        (string) env('ADMIN_USERNAME'),
-        (string) $request->input('username')
-    );
-
-    $validPassword = hash_equals(
-        (string) env('ADMIN_PASSWORD'),
-        (string) $request->input('password')
-    );
-
-    if (!$validUsername || !$validPassword) {
-        return back()
-            ->withErrors([
-                'login' => 'نام کاربری یا رمز عبور اشتباه است.',
-            ])
-            ->withInput();
-    }
-
-    $request->session()->regenerate();
-    $request->session()->put('admin_authenticated', true);
-
-    return redirect()->route('admin.dashboard');
-})->name('admin.login.submit');
-
-Route::get('/admin', function () use ($categories, $products) {
-    if (!session('admin_authenticated')) {
-        return redirect()->route('admin.login');
-    }
-
-    return view('admin.dashboard', compact('categories', 'products'));
-})->name('admin.dashboard');
-
-Route::post('/admin/logout', function (Request $request) {
-    $request->session()->forget('admin_authenticated');
-    $request->session()->regenerateToken();
-
-    return redirect()->route('admin.login');
-})->name('admin.logout');
-/*
-|--------------------------------------------------------------------------
-| Admin Login
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/admin/login', function () {
-    if (session('admin_authenticated')) {
-        return redirect()->route('admin.dashboard');
-    }
-
-    return view('admin.login');
-})->name('admin.login');
-
-
-Route::post('/admin/login', function (Request $request) {
-
-    $request->validate([
-        'username' => ['required', 'string'],
-        'password' => ['required', 'string'],
-    ]);
-
-    $validUsername = hash_equals(
-        (string) env('ADMIN_USERNAME'),
-        (string) $request->input('username')
-    );
-
-    $validPassword = hash_equals(
-        (string) env('ADMIN_PASSWORD'),
-        (string) $request->input('password')
-    );
-
-    if (!$validUsername || !$validPassword) {
-        return back()
-            ->withErrors([
-                'login' => 'نام کاربری یا رمز عبور اشتباه است.',
-            ])
-            ->withInput();
-    }
-
-    $request->session()->regenerate();
-
-    $request->session()->put(
-        'admin_authenticated',
-        true
-    );
-
-    return redirect()->route('admin.dashboard');
-
-})->name('admin.login.submit');
-
-
-Route::get('/admin', function () use ($categories, $products) {
-
-    if (!session('admin_authenticated')) {
-        return redirect()->route('admin.login');
-    }
-
-    return view(
-        'admin.dashboard',
-        compact('categories', 'products')
-    );
-
-})->name('admin.dashboard');
-
-
-Route::post('/admin/logout', function (Request $request) {
-
-    $request->session()->forget(
-        'admin_authenticated'
-    );
-
-    $request->session()->regenerateToken();
-
-    return redirect()->route('admin.login');
-
-})->name('admin.logout');
+Route::prefix('admin')->middleware('admin')->name('admin.')->group(function(){
+    Route::get('/', [DashboardController::class,'index'])->name('dashboard');
+    Route::resource('products', ProductController::class)->except(['show']);
+    Route::resource('categories', CategoryController::class)->only(['index','store','update','destroy']);
+    Route::get('orders', [OrderController::class,'index'])->name('orders.index');
+    Route::get('orders/{order}', [OrderController::class,'show'])->name('orders.show');
+    Route::patch('orders/{order}/status', [OrderController::class,'updateStatus'])->name('orders.status');
+    Route::get('customers', [CustomerController::class,'index'])->name('customers.index');
+    Route::resource('coupons', CouponController::class)->only(['index','store','update','destroy']);
+    Route::resource('banners', BannerController::class)->only(['index','store','update','destroy']);
+    Route::get('settings', [SettingController::class,'index'])->name('settings.index');
+    Route::patch('settings', [SettingController::class,'update'])->name('settings.update');
+});

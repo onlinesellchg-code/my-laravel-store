@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AdminAuth;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -11,8 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Web middleware uses Laravel's default configuration.
+        $middleware->alias([
+            'admin' => AdminAuth::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        // Exception configuration will be added as the project grows.
-    })->create();
+        // Default exception handling.
+    })
+    ->create();

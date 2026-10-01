@@ -1,110 +1,17 @@
 <?php
-
 namespace Database\Seeders;
-
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Database\Seeder;
-
-class ProductSeeder extends Seeder
-{
-    public function run(): void
-    {
-        $products = [
-            [
-                'name' => 'هدفون بی‌سیم مدل Pro X',
-                'slug' => 'wireless-headphone-pro-x',
-                'description' => 'هدفون بی‌سیم با کیفیت صدای مناسب.',
-                'category' => 'دیجیتال',
-                'emoji' => '🎧',
-                'price' => 2450000,
-                'old_price' => 2890000,
-                'stock' => 15,
-                'is_active' => true,
-            ],
-            [
-                'name' => 'ساعت هوشمند سری 5',
-                'slug' => 'smart-watch-series-5',
-                'description' => 'ساعت هوشمند مناسب استفاده روزمره.',
-                'category' => 'دیجیتال',
-                'emoji' => '⌚',
-                'price' => 3890000,
-                'old_price' => 4250000,
-                'stock' => 10,
-                'is_active' => true,
-            ],
-            [
-                'name' => 'ست ابزار 32 پارچه',
-                'slug' => 'tool-set-32',
-                'description' => 'ست کامل ابزار برای کارهای روزمره.',
-                'category' => 'ابزار و تجهیزات',
-                'emoji' => '🧰',
-                'price' => 1790000,
-                'old_price' => null,
-                'stock' => 8,
-                'is_active' => true,
-            ],
-            [
-                'name' => 'قمقمه استیل ورزشی',
-                'slug' => 'sport-steel-bottle',
-                'description' => 'قمقمه استیل مناسب ورزش و سفر.',
-                'category' => 'ورزش و سفر',
-                'emoji' => '🥤',
-                'price' => 690000,
-                'old_price' => 790000,
-                'stock' => 20,
-                'is_active' => true,
-            ],
-            [
-                'name' => 'چراغ مطالعه LED',
-                'slug' => 'led-study-lamp',
-                'description' => 'چراغ مطالعه کم‌مصرف و کاربردی.',
-                'category' => 'خانه و آشپزخانه',
-                'emoji' => '💡',
-                'price' => 540000,
-                'old_price' => null,
-                'stock' => 12,
-                'is_active' => true,
-            ],
-            [
-                'name' => 'کوله‌پشتی روزمره',
-                'slug' => 'daily-backpack',
-                'description' => 'کوله‌پشتی مناسب استفاده روزمره.',
-                'category' => 'ورزش و سفر',
-                'emoji' => '🎒',
-                'price' => 1290000,
-                'old_price' => 1490000,
-                'stock' => 14,
-                'is_active' => true,
-            ],
-            [
-                'name' => 'تیشرت نخی ساده',
-                'slug' => 'simple-cotton-tshirt',
-                'description' => 'تیشرت نخی راحت و سبک.',
-                'category' => 'پوشاک',
-                'emoji' => '👕',
-                'price' => 490000,
-                'old_price' => 590000,
-                'stock' => 25,
-                'is_active' => true,
-            ],
-            [
-                'name' => 'اسپیکر قابل حمل',
-                'slug' => 'portable-speaker',
-                'description' => 'اسپیکر قابل حمل با صدای قدرتمند.',
-                'category' => 'دیجیتال',
-                'emoji' => '🔊',
-                'price' => 1590000,
-                'old_price' => null,
-                'stock' => 9,
-                'is_active' => true,
-            ],
-        ];
-
-        foreach ($products as $product) {
-            Product::updateOrCreate(
-                ['slug' => $product['slug']],
-                $product
-            );
-        }
-    }
-}
+class ProductSeeder extends Seeder { public function run(): void { if(Product::count()>0) return; $data=[
+['هدفون بی‌سیم مدل Pro X','wireless-headphone-pro-x','دیجیتال','🎧',2450000,2890000,15,true],
+['ساعت هوشمند سری 5','smart-watch-series-5','دیجیتال','⌚',3890000,4250000,10,true],
+['اسپیکر قابل حمل','portable-speaker','دیجیتال','🔊',1590000,null,9,true],
+['چراغ مطالعه LED','led-study-lamp','خانه و آشپزخانه','💡',540000,null,12,false],
+['ست ابزار 32 پارچه','tool-set-32','ابزار و تجهیزات','🧰',1790000,null,8,true],
+['کوله‌پشتی روزمره','daily-backpack','ورزش و سفر','🎒',1290000,1490000,14,true],
+['قمقمه استیل ورزشی','sport-steel-bottle','ورزش و سفر','🥤',690000,790000,20,false],
+['تیشرت نخی ساده','simple-cotton-tshirt','پوشاک','👕',490000,590000,25,false],
+['کرم مراقبت از پوست','skin-care-cream','زیبایی و سلامت','🧴',420000,480000,18,false],
+['جاروبرقی خانگی','home-vacuum','خانه و آشپزخانه','🧹',7200000,7900000,6,true],
+]; foreach($data as $r){$c=Category::where('name',$r[2])->firstOrFail();Product::create(['category_id'=>$c->id,'name'=>$r[0],'slug'=>$r[1],'sku'=>strtoupper(substr($r[1],0,6)).'-'.random_int(1000,9999),'short_description'=>'محصول نمونه برای شروع فروشگاه.','description'=>'این محصول نمونه برای راه‌اندازی اولیه فروشگاه ساخته شده است. می‌توانید مشخصات، قیمت، موجودی و اطلاعات آن را از پنل مدیریت ویرایش کنید.','emoji'=>$r[3],'price'=>$r[4],'old_price'=>$r[5],'stock'=>$r[6],'is_active'=>true,'is_featured'=>$r[7]]); } } }

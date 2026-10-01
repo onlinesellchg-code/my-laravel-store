@@ -4,8 +4,9 @@ return [
     'default' => env('CACHE_STORE', 'file'),
     'stores' => [
         'array' => ['driver' => 'array', 'serialize' => false],
-        'file' => ['driver' => 'file', 'path' => storage_path('framework/cache/data'), 'lock_path' => storage_path('framework/cache')],
-        'database' => ['driver' => 'database', 'connection' => env('DB_CACHE_CONNECTION'), 'table' => env('DB_CACHE_TABLE', 'cache'), 'lock_connection' => env('DB_CACHE_LOCK_CONNECTION'), 'lock_table' => env('DB_CACHE_LOCK_TABLE', 'cache_locks')],
+        'file' => ['driver' => 'file', 'path' => storage_path('framework/cache/data')],
+        'database' => ['driver' => 'database', 'connection' => null, 'table' => 'cache', 'lock_connection' => null, 'lock_table' => 'cache_locks'],
+        'null' => ['driver' => 'null'],
     ],
-    'prefix' => env('CACHE_PREFIX', 'my_laravel_store_cache'),
+    'prefix' => env('CACHE_PREFIX', 'store'),
 ];
