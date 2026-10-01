@@ -67,6 +67,11 @@ RUN cat > /etc/apache2/sites-available/000-default.conf.template <<'EOF'
         Require all granted
         Options FollowSymLinks
         DirectoryIndex index.php
+
+        RewriteEngine On
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^ index.php [L]
     </Directory>
 
     ErrorLog ${APACHE_LOG_DIR}/error.log
