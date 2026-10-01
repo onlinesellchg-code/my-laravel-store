@@ -121,3 +121,80 @@ Route::post('/admin/logout', function (Request $request) {
 
     return redirect()->route('admin.login');
 })->name('admin.logout');
+/*
+|--------------------------------------------------------------------------
+| Admin Login
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/admin/login', function () {
+    if (session('admin_authenticated')) {
+        return redirect()->route('admin.dashboard');
+    }
+
+    return view('admin.login');
+})->name('admin.login');
+
+
+Route::post('/admin/login', function (Request $request) {
+
+    $request->validate([
+        'username' => ['required', 'string'],
+        'password' => ['required', 'string'],
+    ]);
+
+    $validUsername = hash_equals(
+        (string) env('ADMIN_USERNAME'),
+        (string) $request->input('username')
+    );
+
+    $validPassword = hash_equals(
+        (string) env('ADMIN_PASSWORD'),
+        (string) $request->input('password')
+    );
+
+    if (!$validUsername || !$validPassword) {
+        return back()
+            ->withErrors([
+                'login' => 'نام کاربری یا رمز عبور اشتباه است.',
+            ])
+            ->withInput();
+    }
+
+    $request->session()->regenerate();
+
+    $request->session()->put(
+        'admin_authenticated',
+        true
+    );
+
+    return redirect()->route('admin.dashboard');
+
+})->name('admin.login.submit');
+
+
+Route::get('/admin', function () use ($categories, $products) {
+
+    if (!session('admin_authenticated')) {
+        return redirect()->route('admin.login');
+    }
+
+    return view(
+        'admin.dashboard',
+        compact('categories', 'products')
+    );
+
+})->name('admin.dashboard');
+
+
+Route::post('/admin/logout', function (Request $request) {
+
+    $request->session()->forget(
+        'admin_authenticated'
+    );
+
+    $request->session()->regenerateToken();
+
+    return redirect()->route('admin.login');
+
+})->name('admin.logout');
